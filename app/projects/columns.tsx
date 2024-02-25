@@ -25,7 +25,17 @@ export type Projects = {
 }
 
 export const columns: ColumnDef<Projects>[] = [
-
+  {
+    id: "icon",
+    cell: ({ row }) => {
+        const payment = row.original
+    return (
+        <Button size="icon">
+            <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      )
+    }
+  },
   {
     accessorKey: "createdAt",
     header: "Creation Date",
@@ -86,6 +96,9 @@ export const columns: ColumnDef<Projects>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Create Dispute</DropdownMenuItem>
+            <DropdownMenuItem>View Dispute</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
