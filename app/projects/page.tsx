@@ -15,7 +15,7 @@ export default async function Page() {
   return (
     <section className="py-24">
       <div className="container mx-auto py-10">
-        <h1 className="text-4xl font-bold mb-10">All Projects</h1>
+        <h1 className="text-4xl font-bold mb-10">All Projects 🔴 🟢 🟡</h1>
         <DataTable columns={columns} data={data} />
       </div>
     </section>
