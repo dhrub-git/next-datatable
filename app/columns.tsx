@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,31 +10,31 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Projects = {
-  createdAt: string
-  name: string
-  status: string
-  customer: string
-  address: string
-  toyalValue: number
-  deliverdValue: number
-}
+  createdAt: string;
+  name: string;
+  status: string;
+  customer: string;
+  address: string;
+  toyalValue: number;
+  deliverdValue: number;
+};
 
 export const columns: ColumnDef<Projects>[] = [
   {
     id: "icon",
     cell: ({ row }) => {
-        const payment = row.original
-    return (
+      const payment = row.original;
+      return (
         <Button size="icon">
-            <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="h-4 w-4" />
         </Button>
-      )
-    }
+      );
+    },
   },
   {
     accessorKey: "createdAt",
@@ -60,13 +60,13 @@ export const columns: ColumnDef<Projects>[] = [
     accessorKey: "totalValue",
     header: () => <div className="text-right">Value</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("totalValue"))
+      const amount = parseFloat(row.getValue("totalValue"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "AUD",
-      }).format(amount)
- 
-      return <div className="text-right font-medium">{formatted}</div>
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
     },
   },
   {
@@ -76,8 +76,8 @@ export const columns: ColumnDef<Projects>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const payment = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -101,7 +101,7 @@ export const columns: ColumnDef<Projects>[] = [
             <DropdownMenuItem>View Dispute</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
