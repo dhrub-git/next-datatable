@@ -1,12 +1,9 @@
-"use client";
-
 import { DataTable } from "@/components/data-table";
 import { Projects, columns } from "./columns";
 import { Separator } from "@/components/ui/separator";
 import { ProjectForm } from "@/components/project-form";
 
 async function getProjects(): Promise<Projects[]> {
-  // Fetch data from your API here.
   const res = await fetch(
     "https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/Projects"
   );
@@ -19,6 +16,8 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto py-10">
+      <img src="../../public/image.png" alt="" />
+      <h2>Lavender Reno</h2>
       <Separator />
       <ProjectForm />
       <Separator />
