@@ -12,37 +12,39 @@ const cardData: CardProps[] = [
     label: "Total Customers",
     amount: "45",
     discription: "+25% from last month",
-    icon: Activity
+    icon: Activity,
   },
   {
     label: "Projests",
     amount: "8",
     discription: "+180.1% from last month",
-    icon: CreditCard
+    icon: CreditCard,
   },
   {
     label: "Active Customers",
     amount: "5",
     discription: "Dhrub, James, John, Smith, and 2 others",
-    icon: Users
+    icon: Users,
   },
   {
     label: "Pending Payments",
     amount: "$45,231.89",
     discription: "+20.1% from last month",
-    icon: DollarSign
-  }
+    icon: DollarSign,
+  },
 ];
 
 async function getProjects(): Promise<Projects[]> {
   // Fetch data from your API here.
-  const res = await fetch("https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/Projects")
-  const data = await res.json()
-  return data
+  const res = await fetch(
+    "https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/Projects"
+  );
+  const data = await res.json();
+  return data;
 }
 
 export default async function Home() {
-  const data = await getProjects()
+  const data = await getProjects();
 
   return (
     <div className="flex flex-col gap-5  w-full p-5">
