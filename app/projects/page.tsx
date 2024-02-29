@@ -16,8 +16,7 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto py-10">
-      <img src="../../public/image.png" alt="" />
-      <h2>Lavender Reno</h2>
+      <h1>Add a Project</h1>
       <Separator />
       <ProjectForm />
       <Separator />
