@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table";
 import { Projects, columns } from "./columns";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const cardData: CardProps[] = [
   {
@@ -61,8 +62,13 @@ export default async function Home() {
           />
         ))}
       </section>
-      <div className="flex items-center space-x-2">
-        <Button>Add Customer</Button>
+      <div className="flex justify-between items-center space-x-2">
+        <Link href="/customers">
+          <Button>Add Customer</Button>
+        </Link>
+        <Link href="/projects">
+          <Button>Add Project</Button>
+        </Link>
       </div>
       <DataTable columns={columns} data={data} />
     </div>

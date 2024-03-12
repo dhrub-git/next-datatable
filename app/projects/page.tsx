@@ -2,6 +2,7 @@ import { DataTable } from "@/components/data-table";
 import { Projects, columns } from "./columns";
 import { Separator } from "@/components/ui/separator";
 import { ProjectForm } from "@/components/project-form";
+import PageTitle from "@/components/page-title";
 
 async function getProjects(): Promise<Projects[]> {
   const res = await fetch(
@@ -16,7 +17,7 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto py-10">
-      <h1>Add a Project</h1>
+      <PageTitle title="Add a Project"></PageTitle>
       <Separator />
       <ProjectForm />
       <Separator />
