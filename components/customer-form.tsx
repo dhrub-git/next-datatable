@@ -31,42 +31,36 @@ import { CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 
-const projectFormSchema = z.object({
-  projectname: z
+const customerFormSchema = z.object({
+  customername: z
     .string()
     .min(2, {
-      message: "Project Name cant not be empty.",
+      message: "Customer Name cant not be empty.",
     })
     .max(30, {
-      message: "Project must not be longer than 30 characters.",
+      message: "Customer not be longer than 30 characters.",
     }),
-  customername: z.string({
-    required_error: "Please select an email to display.",
-  }),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .email(),
   addressline1: z.string().max(160).min(4),
   addressline2: z.string().max(160).min(4),
   city: z.string().max(160).min(4),
   state: z.string().max(160).min(4),
   zip: z.string().max(160).min(4),
-  contract: z.string().max(160).min(4),
-  projectvalue: z
-    .string()
-    .min(4, {
-      message: "Please select a proper amount.",
-    })
-    .max(12),
-  estimatedenddate: z.date(),
 });
 
-type ProjectFormValues = z.infer<typeof projectFormSchema>;
+type CustomerFormValues = z.infer<typeof customerFormSchema>;
 
-export function ProjectForm() {
-  const form = useForm<ProjectFormValues>({
-    resolver: zodResolver(projectFormSchema),
+export function CustomerForm() {
+  const form = useForm<CustomerFormValues>({
+    resolver: zodResolver(customerFormSchema),
     mode: "onChange",
   });
 
-  function onSubmit(data: ProjectFormValues) {
+  function onSubmit(data: CustomerFormValues) {
     toast({
       title: "You submitted the following values:",
       description: (
@@ -84,12 +78,12 @@ export function ProjectForm() {
           <div className="col-span-3">
             <FormField
               control={form.control}
-              name="projectname"
+              name="customername"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name of the Project" {...field} />
+                    <Input placeholder="Name of Customer" {...field} />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -102,17 +96,17 @@ export function ProjectForm() {
           <div className="col-span-3">
             <FormField
               control={form.control}
-              name="customername"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Customer Name</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a Customer" />
+                        <SelectValue placeholder="Select a verified email to display" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -126,7 +120,8 @@ export function ProjectForm() {
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    Please select the customer for this project.
+                    You can manage verified email addresses in your{" "}
+                    <Link href="/examples/forms">email settings</Link>.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -228,92 +223,10 @@ export function ProjectForm() {
               )}
             />
           </div>
-          <div className="col-span-6">
-            <FormField
-              control={form.control}
-              name="contract"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contract</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us a Update the Contract information, enter a brief description of the project, including the scope of work and any relevant details."
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="col-span-3">
-            <FormField
-              control={form.control}
-              name="projectvalue"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Projected Value</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="9,999,999.00"
-                      className="border-input"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="col-span-3">
-            <FormField
-              control={form.control}
-              name="estimatedenddate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col pt-3">
-                  <FormLabel>Estimated End Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            " pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
         <div>
           <Button type="submit" className="py-4">
-            Create Project
+            Create Customer
           </Button>
         </div>
       </form>

@@ -12,6 +12,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+
+const RowDragHandleCell = ({ rowId }: { rowId: string }) => {
+  const { attributes, listeners } = useSortable({
+    id: rowId,
+  });
+  return (
+    // Alternatively, you could set these attributes on the rows themselves
+    <button {...attributes} {...listeners}>
+      🟰
+    </button>
+  );
+};
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Projects = {
@@ -22,9 +42,16 @@ export type Projects = {
   address: string;
   toyalValue: number;
   deliverdValue: number;
+  id: string;
 };
 
 export const columns: ColumnDef<Projects>[] = [
+  {
+    id: "drag-handle",
+    header: "Change order",
+    cell: ({ row }) => <RowDragHandleCell rowId={row.id} />,
+    size: 60,
+  },
   {
     id: "icon",
     cell: ({ row }) => {
