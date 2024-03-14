@@ -30,6 +30,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
+import { useState } from "react";
 
 const customerFormSchema = z.object({
   customername: z
@@ -48,8 +49,9 @@ const customerFormSchema = z.object({
   addressline1: z.string().max(160).min(4),
   addressline2: z.string().max(160).min(4),
   city: z.string().max(160).min(4),
-  state: z.string().max(160).min(4),
+  state: z.string().max(160).min(3),
   zip: z.string().max(160).min(4),
+
 });
 
 type CustomerFormValues = z.infer<typeof customerFormSchema>;
@@ -60,7 +62,26 @@ export function CustomerForm() {
     mode: "onChange",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   function onSubmit(data: CustomerFormValues) {
+    
+    setIsLoading(true);
+    console.log("inside the form data>>>"+JSON.stringify(data));
+    
+    fetch('/api/customer', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      alert(data.message);
+      setIsLoading(false);
+    }).catch ((error) => {
+      setError(error);
+      setIsLoading(false);
+    })
     toast({
       title: "You submitted the following values:",
       description: (
@@ -72,7 +93,14 @@ export function CustomerForm() {
   }
 
   return (
+    
     <Form {...form}>
+
+<div>
+      {isLoading ? <p>Loading...</p> : null}
+    
+    </div>
+
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
           <div className="col-span-3">
@@ -81,7 +109,7 @@ export function CustomerForm() {
               name="customername"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>Customer Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Name of Customer" {...field} />
                   </FormControl>
@@ -100,25 +128,9 @@ export function CustomerForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <Input placeholder="Name of Customer" {...field} />
+                  </FormControl>
                   <FormDescription>
                     You can manage verified email addresses in your{" "}
                     <Link href="/examples/forms">email settings</Link>.

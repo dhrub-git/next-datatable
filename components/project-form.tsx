@@ -30,6 +30,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
+import { useEffect, useState } from "react";
 
 const projectFormSchema = z.object({
   projectname: z
@@ -65,8 +66,37 @@ export function ProjectForm() {
     resolver: zodResolver(projectFormSchema),
     mode: "onChange",
   });
+  const [customerData, setCustomerData] = useState([] as any);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  useEffect( () => {
+      fetch('/api/builder/customer/1')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("response <<<<<<<<<<>>>"+JSON.stringify(data.customers))
+        setCustomerData(data.customers);
+      })
+  }, [])
 
   function onSubmit(data: ProjectFormValues) {
+    //alert("inside sumit"+JSON.stringify(data));
+    console.log("inside the form data>>>"+JSON.stringify(data));
+   setIsLoading(true);
+   console.log("inside the form data>>>"+JSON.stringify(data));
+   
+   fetch('/api/project', {
+     method: 'POST',
+     body: JSON.stringify(data)
+   })
+   .then((res) => res.json())
+   .then((data) => {
+     alert(data.message);
+     setIsLoading(false);
+   }).catch ((error) => {
+     setError(error);
+     setIsLoading(false);
+   })
     toast({
       title: "You submitted the following values:",
       description: (
@@ -79,7 +109,16 @@ export function ProjectForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <div>
+      {isLoading ? <p>Loading...</p> : null}
+    
+    </div>
+    
+    
+    
+    
+    
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
           <div className="col-span-3">
             <FormField
@@ -116,13 +155,21 @@ export function ProjectForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                    {
+                        customerData.map((cst) => {
+                          
+                          return (
+                           /// <option key={cst.id} value={cst.id}> {cst.customer_name}</option>
+                          
+                          <SelectItem key={cst.id} value={cst.id}>
+                           {cst.value}
+                         </SelectItem>
+                          )
+                        })
+                      }
+                     
+                  
+                    
                     </SelectContent>
                   </Select>
                   <FormDescription>

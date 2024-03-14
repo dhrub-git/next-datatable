@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model builder {
+  id        Int      @id @default(autoincrement()) //y@id  @default(dbgenerated("uuid_generate_v1()"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  @db.VarChar(50)
+  updatedBy String @db.VarChar(50)
+  first_name     String  @db.VarChar(255)
+  last_name     String  @db.VarChar(255)
+  email  String  @unique @db.VarChar(255) 
+  mobile String @default("null")
+  managed_by managed_by[]
+  customer customer[]
+  project project[]
+}
+
+model managed_by {
+  id        Int      @id @default(autoincrement()) //@id  @default(dbgenerated("uuid_generate_v1()"))
+  builderId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  @db.VarChar(50)
+  updatedBy String @db.VarChar(50)
+  first_name     String  @db.VarChar(255)
+  last_name     String  @db.VarChar(255)
+  email  String  @unique @db.VarChar(255) 
+  mobile String @default("null")
+  builder    builder     @relation(fields: [builderId], references: [id])
+  customer customer[]
+  project project[]
+  @@index([builderId])
+}
+
+model customer {
+  id        Int      @id @default(autoincrement())
+  builderId Int
+  builder    builder     @relation(fields: [builderId], references: [id])
+  statusId Int
+  customer_status customer_status @relation(fields: [statusId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  customer_name     String  @db.VarChar(255)
+  email  String   @db.VarChar(255) 
+  address_line_1     String  @db.VarChar(255) @default("null")
+  address_line_2     String  @db.VarChar(255) @default("null")
+  city    String  @db.VarChar(255) @default("null")
+  state     String  @db.VarChar(255) @default("null")
+  postcode     String  @db.VarChar(255) @default("null")
+  managed_by_id Int
+  managed_by managed_by @relation(fields: [managed_by_id], references: [id])
+  customer_project customer_project[]
+  @@index([builderId])
+ 
+}
+
+model customer_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  customer customer[]
+  
+}
+
+model project {
+  id        Int      @id @default(autoincrement())
+  statusId Int
+  project_status project_status @relation(fields: [statusId], references: [id])
+  builderId Int
+  builder    builder     @relation(fields: [builderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  project_name     String  @db.VarChar(255)
+  address_line_1     String  @db.VarChar(255) @default("null")
+  address_line_2     String  @db.VarChar(255) @default("null")
+  city    String  @db.VarChar(255) @default("null")
+  state     String  @db.VarChar(255) @default("null")
+  postcode     String  @db.VarChar(255) @default("null")
+  project_value Int  
+  managed_by_id Int
+  managed_by managed_by @relation(fields: [managed_by_id], references: [id])
+  //project_end_date DateTime @db.Date
+  project_end_date DateTime @db.Date() @default(dbgenerated())
+  project_contract_details String  @db.VarChar(255) @default("null")
+  customer_project customer_project[]
+ 
+}
+
+model project_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project[]
+  
+}
+model customer_project {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  customerId Int
+  customer customer  @relation(fields: [customerId], references: [id])
+  projectId Int
+  project project  @relation(fields: [projectId], references: [id])
+ @@index([customerId, projectId])
+}
+
+
