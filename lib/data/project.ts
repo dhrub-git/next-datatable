@@ -47,75 +47,18 @@ export async function createProject (project: any) {
 
 }
 
-/* Method to return the list of customer for the builder */
-export async function  getCustomers(builderId: Number) {
-    console.log("Fetching All Customers for the builder Id" + builderId)
-    const customers = await prisma.customer.findMany( {
-        where : { builderId: Number(builderId)},
-
-        select: {
-            id:true,
-            customer_name: true,
-
+export async function  getProjectData(projId: Number) {
+    console.log("insidle lib data"+projId)
+    const proj = await prisma.project.findMany ({
+        where : { id: Number(projId)},
+        include: {
+            project_disputes:true,
+            project_files:true,
+            project_milestone:true,
+            project_payment_progres: true
         }
     })
-
-    return customers;
+   
+    return proj;
 }
 
-/*  Method to return the dashboard summary */
-export async function  getBuilderCustomers(id: Number) {
-    console.log("Fetching All Customers for the builder Id" + id)
-    const customers = await prisma.customer.findMany( {
-
-        where : { builderId: Number(id)},
-
-        select: {
-            id:true,
-            customer_name: true,
-            address_line_1: true,
-            address_line_2: true,
-            city:true,
-            state:true,
-            postcode:true,
-          
-             updatedAt: true,
-             customer_status: {
-                select: {
-                    id: true,
-                    name: true
-                }
-             },   
-            customer_project : {
-            
-                select: {
-                
-                    project: {
-                    
-                        select: {
-                        
-                            id: true,
-                            project_value: true,
-                            project_name: true
-                        }
-                    }
-                }
-            },
-            managed_by: {
-                select: {
-                    id: true,
-                    first_name: true,
-                    last_name: true,
-                    email: true
-                }
-            }
-
-
-        },
-        
-        
-        
-      } );
-
-      return customers;
-}

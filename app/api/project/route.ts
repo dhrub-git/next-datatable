@@ -3,7 +3,7 @@ import { createProject } from "@/lib/data/project";
 import { NextResponse } from "next/server";
 
 
-/* POST Method to create a customer */
+/* POST Method to create a project */
 
 export async function POST(request: Request) {
 

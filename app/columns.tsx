@@ -97,7 +97,7 @@ export const columns: ColumnDef<Projects>[] = [
     accessorKey: "totalValue",
     header: () => <div className="text-right">Value</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("project_value"));
+      const amount = parseFloat(row.getValue("totalValue"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "AUD",

@@ -96,6 +96,10 @@ model project {
   project_end_date DateTime @db.Date() @default(dbgenerated())
   project_contract_details String  @db.VarChar(255) @default("null")
   customer_project customer_project[]
+  project_milestone project_milestone[]
+  project_payment_progres project_payment_progres[]
+  project_disputes project_disputes[]
+  project_files project_file[]
  
 }
 
@@ -120,4 +124,100 @@ model customer_project {
  @@index([customerId, projectId])
 }
 
+model project_milestone {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
 
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  contract_milestone  String  @db.VarChar(255)
+  payment_progress  String  @db.VarChar(255)
+  actual_date DateTime @default(now())
+  milestone_amount String  @db.VarChar(255)
+  milestone_cumulative String  @db.VarChar(255)
+
+  statusId Int
+  status project_milestone_status @relation(fields: [statusId], references: [id])
+
+
+}
+
+model project_milestone_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project_milestone[]
+  
+}
+
+model project_payment_progres {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  payment  String  @db.VarChar(255)
+  amount  String  @db.VarChar(255)
+  transaction_date DateTime @default(now())
+  transaction_reference String  @db.VarChar(255)
+
+  statusId Int
+  status project_payment_status @relation(fields: [statusId], references: [id])
+
+}
+
+model project_payment_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project_payment_progres[]
+  
+}
+
+model project_disputes {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  dispute_milestone  String  @db.VarChar(255)
+  dispute_category  String  @db.VarChar(255)
+  dispute_details  String  @db.VarChar(255)
+  released_date DateTime @db.Date() @default(dbgenerated())
+  file String  @db.VarChar(255)
+  variation_amount String  @db.VarChar(255)
+  
+
+}
+
+model project_file {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  file_name  String  @db.VarChar(255)
+  tag  String  @db.VarChar(255)
+  released_date  String  @db.VarChar(255)
+  milestone  String  @db.VarChar(255)
+  relates_to String  @db.VarChar(255)
+  third_party String  @db.VarChar(255)
+  uploaded_by Int
+ 
+}
