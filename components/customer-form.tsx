@@ -54,10 +54,15 @@ const customerFormSchema = z.object({
 
 type CustomerFormValues = z.infer<typeof customerFormSchema>;
 
-export function CustomerForm() {
+interface CustomerFormProps {
+  initialValues?: Partial<CustomerFormValues>;
+}
+
+export function CustomerForm({ initialValues }: CustomerFormProps) {
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     mode: "onChange",
+    defaultValues: initialValues,
   });
 
   function onSubmit(data: CustomerFormValues) {
@@ -81,7 +86,7 @@ export function CustomerForm() {
               name="customername"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Project Name</FormLabel>
+                  <FormLabel>Customer Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Name of Customer" {...field} />
                   </FormControl>
@@ -226,7 +231,7 @@ export function CustomerForm() {
         </div>
         <div>
           <Button type="submit" className="py-4">
-            Create Customer
+            {initialValues ? "Update Customer" : "Create Customer"}{" "}
           </Button>
         </div>
       </form>
