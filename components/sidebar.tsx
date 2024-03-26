@@ -1,104 +1,59 @@
 "use client";
 
-import React from "react";
-import { Nav } from "./ui/nav";
 import {
-  File,
-  Users,
+  Bell,
   Cog,
+  Home,
+  List,
   ShieldEllipsis,
-  BellRing,
+  Users,
   HelpCircle,
-  ChevronRight,
-  LayoutDashboard,
 } from "lucide-react";
-import { Separator } from "./ui/separator";
-import { Button } from "./ui/button";
+import { SidebarDesktop } from "./sidebar-desktop";
+import { SidebarItems } from "../types";
+import { SidebarButton } from "./sidebar-button";
 
-import { useWindowWidth } from "@react-hook/window-size";
-
-type Props = {};
-
-export default function sidebar({}: Props) {
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-
-  const onlyWidth = useWindowWidth();
-  const isMobile = onlyWidth < 768;
-
-  function toggleSidebar() {
-    setIsCollapsed(!isCollapsed);
-  }
-
-  return (
-    <div className="relative min-w-[80px] border-r px-3 pb-10 pt-24">
-      {!isMobile && (
-        <div className="absolute right-[-20px] top-7]">
-          <Button
-            variant="secondary"
-            className="rounded-full p-2"
-            onClick={toggleSidebar}
-          >
-            <ChevronRight />
-          </Button>
-        </div>
-      )}
-
-      <Separator />
-      <Nav
-        isCollapsed={isMobile ? true : isCollapsed}
-        links={[
-          {
-            title: "Dashboard",
-            label: "",
-            icon: LayoutDashboard,
-            variant: "ghost",
-            href: "/",
-          },
-          {
-            title: "Customers",
-            label: "",
-            icon: Users,
-            variant: "ghost",
-            href: "/customers",
-          },
-          {
-            title: "Projects",
-            label: "9",
-            icon: File,
-            variant: "default",
-            href: "/projects",
-          },
-          {
-            title: "Settings",
-            label: "",
-            icon: Cog,
-            variant: "ghost",
-            href: "/settings",
-          },
-          {
-            title: "Admin",
-            label: "",
-            icon: ShieldEllipsis,
-            variant: "ghost",
-            href: "/admin",
-          },
-          {
-            title: "Notifications",
-            label: "",
-            icon: BellRing,
-            variant: "ghost",
-            href: "/notifications",
-          },
-          {
-            title: "Help",
-            label: "",
-            icon: HelpCircle,
-            variant: "ghost",
-            href: "/help",
-          },
-        ]}
-      />
-      <Separator />
+const sidebarItems: SidebarItems = {
+  links: [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Customers", href: "/customers", icon: Users },
+    { label: "Projects", href: "/projects", icon: List },
+    {
+      href: "/settings",
+      icon: Cog,
+      label: "Settings",
+    },
+    {
+      href: "/admin",
+      icon: ShieldEllipsis,
+      label: "Admin",
+    },
+    {
+      href: "/notifications",
+      icon: Bell,
+      label: "Notifications",
+    },
+    {
+      href: "/help",
+      icon: HelpCircle,
+      label: "Help",
+    },
+  ],
+  extras: (
+    <div className="flex flex-col gap-2">
+      {/* <SidebarButton icon={MoreHorizontal} className="w-full">
+        More
+      </SidebarButton> */}
+      {/* <SidebarButton
+        className="w-full justify-center text-white"
+        variant="default"
+      >
+        Tweet
+      </SidebarButton> */}
     </div>
-  );
+  ),
+};
+
+export function Sidebar() {
+  return <SidebarDesktop sidebarItems={sidebarItems} />;
 }

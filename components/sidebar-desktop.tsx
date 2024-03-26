@@ -20,7 +20,9 @@ export function SidebarDesktop(props: SidebarDesktopProps) {
   return (
     <aside className="w-[270px] max-w-xs h-screen fixed left-0 top-0 z-40 border-r">
       <div className="h-full px-3 py-4">
-        <h3 className="mx-3 text-lg font-semibold text-foreground">Twitter</h3>
+        <h1 className="mx-3 text-2xl font-semibold text-foreground">
+          BuildPayz
+        </h1>
         <div className="mt-5">
           <div className="flex flex-col gap-1 w-full">
             {props.sidebarItems.links.map((link, index) => (
@@ -47,7 +49,7 @@ export function SidebarDesktop(props: SidebarDesktopProps) {
                         <AvatarImage src="https://github.com/max-programming.png" />
                         <AvatarFallback>Max Programming</AvatarFallback>
                       </Avatar>
-                      <span>Max Programming</span>
+                      <span>Anthony Blyth</span>
                     </div>
                     <MoreHorizontal size={20} />
                   </div>
