@@ -3,9 +3,20 @@ import { Projects, columns } from "./columns";
 import { Separator } from "@/components/ui/separator";
 import { ProjectForm } from "@/components/project-form";
 import PageTitle from "@/components/page-title";
+import { ProjectSettingsForm } from "@/components/projectsettings-form";
 import { Grid } from "lucide-react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 async function getProjects(): Promise<Projects[]> {
   const res = await fetch(
@@ -33,6 +44,7 @@ export default async function Page() {
             <TabsTrigger value="payment">Payment Progress</TabsTrigger>
             <TabsTrigger value="files">Files</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           <TabsContent value="milestones" className="space-y-4">
             <DataTable columns={columns} data={data} />
@@ -48,6 +60,10 @@ export default async function Page() {
           </TabsContent>
           <TabsContent value="history" className="space-y-4">
             <DataTable columns={columns} data={data} />
+          </TabsContent>
+          <TabsContent value="settings" className="space-y-4">
+            {/* <DataTable columns={columns} data={data} /> */}
+            <ProjectSettingsForm />
           </TabsContent>
         </Tabs>
       </div>
