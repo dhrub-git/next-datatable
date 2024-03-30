@@ -69,26 +69,19 @@ export const columns: ColumnDef<Customers>[] = [
     header: "Creation Date",
   },
   {
-    accessorKey: "name",
+    accessorKey: "milestone_category.name",
     header: "Name",
   },
   {
-    accessorKey: "status",
+    accessorKey: "status.name",
     header: "Status",
   },
+ 
   {
-    accessorKey: "Projects",
-    header: "Projects",
-  },
-  {
-    accessorKey: "address",
-    header: "Address",
-  },
-  {
-    accessorKey: "Value",
-    header: () => <div className="text-right">Value</div>,
+    accessorKey: "milestone_amount",
+    header: () => <div className="text-right">Milestone Amount</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("Value"));
+      const amount = parseFloat(row.getValue("milestone_amount"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "AUD",
@@ -97,14 +90,21 @@ export const columns: ColumnDef<Customers>[] = [
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
+ 
   {
-    accessorKey: "bsb",
-    header: "Delivered BSB",
+    accessorKey: "milestone_cumulative",
+    header: () => <div className="text-right">Milestone Cumulative</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("milestone_cumulative"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "AUD",
+      }).format(amount);
+
+      return <div className="text-right font-medium">{formatted}</div>;
+    },
   },
-  {
-    accessorKey: "accountNumber",
-    header: "Account Number",
-  },
+ 
   {
     id: "actions",
     cell: ({ row }) => {

@@ -51,9 +51,9 @@ const customerFormSchema = z.object({
   city: z.string().max(160).min(4),
   state: z.string().max(160).min(3),
   zip: z.string().max(160).min(4),
-  customerId: z.number(),
-  builderId: z.number(),
-  statusId: z.number(),
+  customerId: z.number().optional(),
+  builderId: z.number().optional(),
+  statusId: z.number().optional(),
 
 
 });
@@ -76,7 +76,14 @@ export function CustomerForm({ initialValues }: CustomerFormProps) {
   function onSubmit(data: CustomerFormValues) {
 
     console.log("inside the form data>>>"+JSON.stringify(data));
-    
+   
+    if ( data.builderId==null) {
+      console.log("inside the if condition");
+      data.builderId=1
+      data.statusId=1
+    }
+    console.log("inside the form data 2>>>"+JSON.stringify(data));
+   
     fetch('/api/customer', {
       method: 'POST',
       body: JSON.stringify(data)

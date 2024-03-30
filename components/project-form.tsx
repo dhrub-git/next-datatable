@@ -49,7 +49,7 @@ const projectFormSchema = z.object({
   addressline2: z.string().max(160).min(4),
   city: z.string().max(160).min(4),
   state: z.string().max(160).min(4),
-  zip: z.string().max(160).min(4),
+  zip: z.string().max(160).min(4).optional(),
   contract: z.string().max(160).min(4),
   projectvalue: z
     .string()
@@ -58,80 +58,48 @@ const projectFormSchema = z.object({
     })
     .max(12),
   estimatedenddate: z.date(),
+  builderId: z.number().optional(),
+  statusId: z.number().optional(),
+  projectId: z.number().optional(),
+  managed_by_id: z.number().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
-export function ProjectForm({projectId} : String) {
+interface ProjectFormProps {
+  initialValues?: Partial<ProjectFormValues>;
+}
+
+export function ProjectForm({initialValues} : ProjectFormProps) {
+
+  console.log("proj data in the form 1 >>"+JSON.stringify(initialValues));
+ // console.log("proj data in the form 2>>"+prjData.project_name);
   
+ let formData: any = {};
+ 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     mode: "onChange",
+    defaultValues:initialValues,
   });
   const [customerData, setCustomerData] = useState([] as any);
   const [projectData, setProjectData] = useState([] as any);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
- // const [prjName, setProjectName] = useState();
-  const [formData, setFormData] = useState({
-    builderId:null,
-    statusId: null,
-    projectId: null,
-    managed_by_id: null,
-    projName : '',
-    customerId: null,
-    addressline1: '',
-    addressline2:'',
-    city: '',
-    state: '',
-    postcode:'',
-    projectValue:'',
-    contract:'',
-    estimatedDate: '',
-  });
+ 
 
   useEffect( () => {
-    console.log("in the first useeffect");
+   
       fetch('/api/builder/customer/1')
       .then((res) => res.json())
       .then((data) => {
-        console.log("response <<<<<<<<<<>>>"+JSON.stringify(data.customers))
+        console.log("customer data <<<<<<<<<<>>>"+JSON.stringify(data.customers))
         setCustomerData(data.customers);
        
       })
   }, [])
 
-  useEffect( () => {
-      console.log("project Id in the useEffect>>>>"+projectId);
-      fetch('/api/project/'+projectId)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log('setProjectData response>>'+JSON.stringify(data))
-  
-        
-          setProjectData(data.project);
-        //  setProjectName(data.project.project_name);
-        setFormData({
-          builderId: data.project.builderId,
-          statusId: data.project.statusId,
-          projectId: data.project.id,
-          managed_by_id: data.project.managed_by_id,
-          projName:  data.project.project_name,
-          customerId: data.project.customerId,
-          addressline1: data.project.address_line_1,
-          addressline2: data.project.address_line_2,
-          city:  data.project.city,
-          state:  data.project.state,
-          postcode:  data.project.postcode,
-          projectValue: data.project.project_value,
-          contract : data.project.project_contract_details,
-          estimatedDate: data.project.project_end_date,
-          
-        })
-        
-        })
-      }, [])
+
 
   function onSubmit(data: ProjectFormValues) {
     //alert("inside sumit"+JSON.stringify(data));
@@ -152,9 +120,8 @@ export function ProjectForm({projectId} : String) {
     //   builderId: formData.builderId
     // }]
   
-    console.log("final form data>>>"+JSON.stringify(requestBody));
-   setIsLoading(true);
-   setIsLoading(false);
+   // console.log("final form data>>>"+JSON.stringify(requestBody));
+
    
    fetch('/api/project', {
      method: 'POST',
@@ -163,10 +130,10 @@ export function ProjectForm({projectId} : String) {
    .then((res) => res.json())
    .then((data) => {
      alert(data.message);
-     setIsLoading(false);
+     //setIsLoading(false);
    }).catch ((error) => {
-     setError(error);
-     setIsLoading(false);
+    // setError(error);
+    // setIsLoading(false);
    })
     toast({
       title: "You submitted the following values:",
@@ -180,10 +147,7 @@ export function ProjectForm({projectId} : String) {
 
   return (
     <Form {...form}>
-      <div>
-      {isLoading ? <p>Loading...</p> : null}
-    
-    </div>
+     
     
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
@@ -195,8 +159,8 @@ export function ProjectForm({projectId} : String) {
                 <FormItem>
                   <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    {/* <Input placeholder="Name of the Project" {...field} /> */}
-                    <Input defaultValue={formData.projName} {...field}/>
+                    <Input placeholder="Name of the Project" {...field} />
+                    {/* <Input defaultValue={formData.projName} {...field}/> */}
 
                     
                     
@@ -218,7 +182,7 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>Customer Name</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={formData.customerId}
+                   // defaultValue={formData.customerId}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -260,8 +224,8 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>Address Line 1</FormLabel>
                   <FormControl>
                     <Textarea
-                    defaultValue={formData.addressline1}
-                      // placeholder="Address Line 1"
+                   // defaultValue={formData.addressline1}
+                       placeholder="Address Line 1"
                       className="resize-none"
                       {...field}
                     />
@@ -281,8 +245,8 @@ export function ProjectForm({projectId} : String) {
                   <FormControl>
                     <Textarea
                     //defaultValue={}
-                    defaultValue={formData.addressline2}
-                      // placeholder="Address Line 2"
+                    //defaultValue={formData.addressline2}
+                       placeholder="Address Line 2"
                       className="resize-none"
                       {...field}
                     />
@@ -301,8 +265,8 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>City</FormLabel>
                   <FormControl>
                     <Textarea
-                      // placeholder="City"
-                      defaultValue={formData.city}
+                       placeholder="City"
+                      //defaultValue={formData.city}
                       className="resize-none"
                       {...field}
                     />
@@ -321,8 +285,8 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>State</FormLabel>
                   <FormControl>
                     <Textarea
-                      // placeholder="State"
-                      defaultValue={formData.state}
+                       placeholder="State"
+                      //defaultValue={formData.state}
                       className="resize-none"
                       {...field}
                     />
@@ -341,8 +305,8 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>Zip Code</FormLabel>
                   <FormControl>
                     <Textarea
-                      //placeholder="0000-9999"
-                      defaultValue={formData.postcode}
+                      placeholder="0000-9999"
+                      //defaultValue={formData.postcode}
                       
                       className="resize-none"
                       {...field}
@@ -362,8 +326,8 @@ export function ProjectForm({projectId} : String) {
                   <FormLabel>Contract</FormLabel>
                   <FormControl>
                     <Textarea
-                      defaultValue={formData.contract}
-                      //placeholder="Tell us a Update the Contract information, enter a brief description of the project, including the scope of work and any relevant details."
+                     // defaultValue={formData.contract}
+                      placeholder="Tell us a Update the Contract information, enter a brief description of the project, including the scope of work and any relevant details."
                       className="resize-none"
                       {...field}
                     />
@@ -383,8 +347,8 @@ export function ProjectForm({projectId} : String) {
                   <FormControl>
                     <Input
                       type="number"
-                      defaultValue={formData.projectValue}
-                      //placeholder="9,999,999.00"
+                   //   defaultValue={formData.projectValue}
+                      placeholder="9,999,999.00"
                       className="border-input"
                       {...field}
                     />
@@ -405,7 +369,7 @@ export function ProjectForm({projectId} : String) {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          defaultValue={formData.estimatedDate}
+                         // defaultValue={formData.estimatedDate}
                           variant={"outline"}
                           className={cn(
                             " pl-3 text-left font-normal",
@@ -441,7 +405,8 @@ export function ProjectForm({projectId} : String) {
         </div>
         <div>
           <Button type="submit" className="py-4">
-          {projectId ? "Update Project" : "Create Project"}{" "}
+       
+           {initialValues ? "Update Project" : "Create Project"}{" "} 
           </Button>
         </div>
       </form>

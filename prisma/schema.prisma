@@ -135,6 +135,8 @@ model project_milestone {
   status project_milestone_status @relation(fields: [statusId], references: [id])
   variance variance[]
   payment_milestone payment_milestone[]
+  project_disputes project_disputes[]
+  
 }
 
 model milestone_category {
@@ -192,11 +194,15 @@ model project_disputes {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   createdBy String  
+  
   updatedBy String
 
   projectId Int
   project project @relation(fields: [projectId], references: [id])
 
+  milestoneId Int @default(13)
+  project_milestone project_milestone @relation(fields: [milestoneId], references: [id])
+  
   dispute_milestone  String  @db.VarChar(255)
   dispute_category  String  @db.VarChar(255)
   dispute_details  String  @db.VarChar(255)

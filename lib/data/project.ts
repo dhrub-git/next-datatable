@@ -91,7 +91,12 @@ export async function  getProjectData(projId: Number) {
         include: {
             project_disputes:true,
             project_files:true,
-            project_milestone:true,
+            project_milestone:{
+                include: {
+                    milestone_category: true,
+                    status:true,
+                }
+            },
             project_payment_progres: true
         }
     })

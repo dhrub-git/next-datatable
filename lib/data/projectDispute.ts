@@ -18,7 +18,8 @@ export async function createProjectDispute (pjtDispute: any) {
             dispute_details:pjtDispute.details,
             released_date:pjtDispute.releasedDate,
             file:pjtDispute.file,
-            variation_amount:pjtDispute.amount
+            variation_amount:pjtDispute.amount,
+            milestoneId: pjtDispute.milestoneId? pjtDispute.milestoneId: null
 
             }
           

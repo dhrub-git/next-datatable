@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         
         const newCustomer  = await createUpdateCustomer(customer);
       
-        return NextResponse.json({"status":200,"message":"Customer Created Succesfully"});
+        return NextResponse.json({"status":200,"message":"Customer Created Succesfully", "newCustomer": newCustomer.id});
       
     }catch (err) {
         console.log("POST Error"+err)

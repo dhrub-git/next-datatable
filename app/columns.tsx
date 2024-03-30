@@ -86,7 +86,7 @@ export const columns: ColumnDef<Projects>[] = [
     header: "Status",
   },
   {
-    accessorKey: "customer_project.project.project_name",
+    accessorKey: "project.project_name",
     header: "Project",
   },
   {
@@ -94,10 +94,10 @@ export const columns: ColumnDef<Projects>[] = [
     header: "Address",
   },
   {
-    accessorKey: "customer_project.project.project_value",
+    accessorKey: "project.project_value",
     header: () => <div className="text-right">Value</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("customer_project.project.project_value"));
+      const amount = parseFloat(row.getValue("project.project_value"));
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "AUD",

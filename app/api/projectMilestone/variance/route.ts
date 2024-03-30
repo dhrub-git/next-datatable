@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       
         
         console.log(" milestone variancePOST 1>>>"+JSON.stringify(milestone));
-       const newMilestone  = await createVariance(milestone, true);
+       const newMilestone  = await createVariance(milestone, false);
       
       
         return NextResponse.json({message: "Milestone variance Created Succesfully", newMilestone}, 

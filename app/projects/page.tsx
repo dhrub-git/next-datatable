@@ -7,16 +7,16 @@ import { Grid } from "lucide-react";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-async function getProjects(): Promise<Projects[]> {
-  const res = await fetch(
-    "https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/Projects"
-  );
-  const data = await res.json();
-  return data;
-}
+// async function getProjects(): Promise<Projects[]> {
+//   const res = await fetch(
+//     "https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/Projects"
+//   );
+//   const data = await res.json();
+//   return data;
+// }
 
 export default async function Page() {
-  const data = await getProjects();
+
 
   return (
     <div className="container mx-auto py-10">

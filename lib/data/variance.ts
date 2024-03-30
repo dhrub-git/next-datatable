@@ -57,11 +57,11 @@ export async function createVariance (vrince: any, dispute: boolean) {
     }
 
 
-    export async function  getAllMilestone() {
-        console.log("insidle lib data")
-        const builders = await prisma.project_milestone.findMany( {
-            include: {project:true}
+    export async function  getVariance(milestoneId: Number) {
+        console.log("inside Vraince  data")
+        const variance = await prisma.variance.findMany( {
+            where : { milestoneId: Number(milestoneId)},
         } );
-        return builders;
+        return variance;
     
     }
