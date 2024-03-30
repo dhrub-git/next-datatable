@@ -1,0 +1,334 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model builder {
+  id        Int      @id @default(autoincrement()) //y@id  @default(dbgenerated("uuid_generate_v1()"))
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  @db.VarChar(50)
+  updatedBy String @db.VarChar(50)
+  first_name     String  @db.VarChar(255)
+  last_name     String  @db.VarChar(255)
+  email  String  @unique @db.VarChar(255) 
+  mobile String @default("null")
+  managed_by managed_by[]
+  customer customer[]
+  project project[]
+}
+
+model managed_by {
+  id        Int      @id @default(autoincrement()) //@id  @default(dbgenerated("uuid_generate_v1()"))
+  builderId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  @db.VarChar(50)
+  updatedBy String @db.VarChar(50)
+  first_name     String  @db.VarChar(255)
+  last_name     String  @db.VarChar(255)
+  email  String  @unique @db.VarChar(255) 
+  mobile String @default("null")
+  builder    builder     @relation(fields: [builderId], references: [id])
+  customer customer[]
+  project project[]
+  @@index([builderId])
+}
+
+model customer {
+  id        Int      @id @default(autoincrement())
+  builderId Int
+  builder    builder     @relation(fields: [builderId], references: [id])
+  statusId Int
+  customer_status customer_status @relation(fields: [statusId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  customer_name     String  @db.VarChar(255)
+  email  String   @db.VarChar(255) 
+  address_line_1     String  @db.VarChar(255) @default("null")
+  address_line_2     String  @db.VarChar(255) @default("null")
+  city    String  @db.VarChar(255) @default("null")
+  state     String  @db.VarChar(255) @default("null")
+  postcode     String  @db.VarChar(255) @default("null")
+  managed_by_id Int
+  managed_by managed_by @relation(fields: [managed_by_id], references: [id])
+  project project[]
+  @@index([builderId])
+ 
+}
+
+model customer_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  customer customer[]
+  
+}
+model project {
+  id        Int      @id @default(autoincrement())
+  statusId Int
+  project_status project_status @relation(fields: [statusId], references: [id])
+  builderId Int
+  builder    builder     @relation(fields: [builderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  project_name     String  @db.VarChar(255)
+  address_line_1     String  @db.VarChar(255) @default("null")
+  address_line_2     String  @db.VarChar(255) @default("null")
+  city    String  @db.VarChar(255) @default("null")
+  state     String  @db.VarChar(255) @default("null")
+  postcode     String  @db.VarChar(255) @default("null")
+  project_value Int  
+  managed_by_id Int
+  managed_by managed_by @relation(fields: [managed_by_id], references: [id])
+  //project_end_date DateTime @db.Date
+  project_end_date DateTime @db.Date() @default(dbgenerated())
+  project_contract_details String  @db.VarChar(255) @default("null")
+  customerId Int @default(3)
+  customer customer  @relation(fields: [customerId], references: [id])
+  project_milestone project_milestone[]
+  project_payment_progres project_payment_progres[]
+  project_disputes project_disputes[]
+  project_files project_file[]
+ @@index([builderId, customerId])
+}
+model project_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project[]
+  
+}
+
+
+
+
+model project_milestone {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  milestone_categoryId  Int  @default(1)
+  milestone_category milestone_category @relation(fields: [milestone_categoryId], references: [id])
+  payment_progress  String  @db.VarChar(255)
+  actual_date DateTime @default(now())
+  milestone_amount String  @db.VarChar(255)
+  milestone_cumulative String  @db.VarChar(255)
+
+  statusId Int
+  status project_milestone_status @relation(fields: [statusId], references: [id])
+  variance variance[]
+  payment_milestone payment_milestone[]
+}
+
+model milestone_category {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project_milestone project_milestone[]
+  
+}
+
+model variance {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy    String  @db.VarChar(255)
+  updatedBy  String  @db.VarChar(255)
+  change   String  @db.VarChar(255)
+  milestoneId Int
+  project_milestone project_milestone @relation(fields: [milestoneId], references: [id])
+  statusId Int
+  status variance_status @relation(fields: [statusId], references: [id])
+  varianceType Int
+  variance_type variance_type @relation(fields: [varianceType], references: [id])
+  dispute_variance dispute_variance[]
+  payment_variance payment_variance[]
+
+}
+
+model dispute_variance {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  disputeId Int
+  project_disputes project_disputes  @relation(fields: [disputeId], references: [id])
+  varianceId Int
+  variance variance  @relation(fields: [varianceId], references: [id])
+
+ @@index([disputeId, varianceId])
+}
+
+model project_milestone_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project_milestone[]
+  
+}
+
+model project_disputes {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  dispute_milestone  String  @db.VarChar(255)
+  dispute_category  String  @db.VarChar(255)
+  dispute_details  String  @db.VarChar(255)
+  released_date DateTime @db.Date() @default(dbgenerated())
+  file String  @db.VarChar(255)
+  variation_amount String  @db.VarChar(255)
+  dispute_variance dispute_variance[]
+  payment_dispute payment_dispute[]
+
+}
+model project_file {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  file_name  String  @db.VarChar(255)
+  tag  String  @db.VarChar(255)
+  released_date  String  @db.VarChar(255)
+  milestone  String  @db.VarChar(255)
+  relates_to String  @db.VarChar(255)
+  third_party String  @db.VarChar(255)
+  uploaded_by Int
+ 
+}
+
+model project_payment_progres {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+
+  projectId Int
+  project project @relation(fields: [projectId], references: [id])
+
+  payment  String  @db.VarChar(255)
+  amount  String  @db.VarChar(255)
+  transaction_date DateTime @default(now())
+  transaction_reference String  @db.VarChar(255)
+
+  statusId Int
+  status project_payment_status @relation(fields: [statusId], references: [id])
+
+  paymentType Int
+  payment_type payment_type @relation(fields: [paymentType], references: [id]) 
+
+  payment_milestone payment_milestone[]
+  payment_dispute payment_dispute[]
+  payment_variance payment_variance[]
+}
+
+model payment_milestone {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  milestoneId Int
+  project_milestone project_milestone @relation(fields: [milestoneId], references: [id])
+  paymentId Int
+  project_payment_progres project_payment_progres @relation(fields: [paymentId], references: [id])
+
+ @@index([milestoneId, paymentId])
+  
+  
+}
+
+model payment_dispute {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  disputeId Int
+  project_disputes project_disputes @relation(fields: [disputeId], references: [id])
+  paymentId Int
+  project_payment_progres project_payment_progres @relation(fields: [paymentId], references: [id])
+
+ @@index([disputeId, paymentId])
+  
+  
+}
+model payment_variance {
+
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String  
+  updatedBy String
+  varainceId Int
+  variance variance @relation(fields: [varainceId], references: [id])
+  paymentId Int
+  project_payment_progres project_payment_progres @relation(fields: [paymentId], references: [id])
+
+ @@index([varainceId, paymentId])
+  
+  
+}
+model project_payment_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project project_payment_progres[]
+  
+}
+
+model payment_type {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project_payment_progres project_payment_progres[]
+  
+}
+
+model variance_status {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  variance variance[]
+  
+}
+model variance_type {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  variance variance[]
+  
+}

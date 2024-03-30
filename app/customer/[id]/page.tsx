@@ -1,6 +1,7 @@
+"use client";
 import BreadCrumb from "@/components/breadcrumb";
 import { ProjectForm } from "@/components/project-form";
-import React from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import { Customers, columns } from "../../customers/columns";
 import { DataTable } from "@/components/data-table";
 import { CustomerForm } from "@/components/customer-form";
@@ -15,16 +16,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
-export default async function Page({ params }: { params: { id: string } }) {
+function Customer({ params }: { params: { id: string } }) {
+
   const breadcrumbItems = [
     { title: "Dashboard", link: "/" },
     { title: "Customer", link: "/customers" },
   ];
 
-  const res = await fetch(
-    `https://65dace5cbcc50200fcdd3425.mockapi.io/api/v1/customers/${params.id}`,
-    { cache: "no-store" }
-  );
+
   const data = (await res.json()) as {
     createdAt: string;
     name: string;
@@ -43,22 +42,59 @@ export default async function Page({ params }: { params: { id: string } }) {
     zip: string;
   };
 
+  const [cstmr, setCust] = useState([] as any);
+ 
+  useEffect(() => {
+    
+    fetch('/api/customer/'+params.id)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('response>>'+JSON.stringify(data))
+
+      
+        setCust(data.customers)
+  
+      
+      })
+  }, [])
+
+
+  const data = (cstmr) as {
+    id: number;
+    builderId: number;
+    statusId: number;
+    createdAt: string;
+    customer_name: string;
+    email: string;
+    address_line_1: string;
+    address_line_2: string;
+    city: string;
+    state: string;
+    postcode: string;
+  };
+
+  console.log("data >>>"+JSON.stringify(data));
   return (
     <div className="flex-1 space-y-4 p-8">
-      <BreadCrumb items={breadcrumbItems} />
 
-      <div className="col-span-full space-y-3 lg:col-span-4">
-        <CustomerForm
-          initialValues={{
-            customername: data.name,
+    <BreadCrumb items={breadcrumbItems} />
+    <CustomerForm   initialValues={{
+            customerId: data.id,
+            builderId: data.builderId,
+            statusId: data.statusId,
+            customername: data.customer_name,
+            email: data.email,
             state: data.state,
             city: data.city,
-            addressline1: data.addressline1,
-            addressline2: data.addressline2,
-            zip: data.zip,
-          }}
-        />
-      </div>
-    </div>
+            addressline1: data.address_line_1,
+            addressline2: data.address_line_2,
+            zip: data.postcode,
+          }}/>
+
+    
+  </div>
+
   );
 }
+
+export default Customer
