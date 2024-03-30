@@ -55,7 +55,7 @@ const projectFormSchema = z.object({
       message: "Please select a proper amount.",
     })
     .max(12),
-  estimatedenddate: z.date(),
+  estimatedenddate: z.date().optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -79,8 +79,8 @@ export function ProjectForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2 rounded-lg border p-4">
           <div className="col-span-3">
             <FormField
               control={form.control}

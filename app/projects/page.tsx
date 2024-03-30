@@ -33,9 +33,11 @@ export default async function Page() {
     <div className="container mx-auto py-10">
       <PageTitle title="Add a Project"></PageTitle>
       <Separator />
-      <ProjectForm />
+      <div className="p-8">
+        <ProjectForm />
+      </div>
       <Separator />
-      <h1 className="text-4xl font-bold mb-10">All Projects 🔴 🟢 🟡</h1>
+      {/* <h1 className="text-4xl font-bold mb-10">All Projects 🔴 🟢 🟡</h1> */}
       <div className="flex-1 space-y-4 p-8 pt-6">
         <Tabs defaultValue="milestones" className="space-y-4">
           <TabsList>
