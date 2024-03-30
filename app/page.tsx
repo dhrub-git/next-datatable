@@ -23,10 +23,11 @@ const Builder: FunctionComponent = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log('response>>'+JSON.stringify(data))
+
       
         setPosts(data.customers)
        // setCardData(data.summary)
-
+      
         setCardData([
           
                   {

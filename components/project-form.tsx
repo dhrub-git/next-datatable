@@ -31,6 +31,7 @@ import { CalendarIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { useEffect, useState } from "react";
+import { request } from "http";
 
 const projectFormSchema = z.object({
   projectname: z
@@ -61,33 +62,103 @@ const projectFormSchema = z.object({
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
-export function ProjectForm() {
+export function ProjectForm({projectId} : String) {
+  
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema),
     mode: "onChange",
   });
   const [customerData, setCustomerData] = useState([] as any);
+  const [projectData, setProjectData] = useState([] as any);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
+ // const [prjName, setProjectName] = useState();
+  const [formData, setFormData] = useState({
+    builderId:null,
+    statusId: null,
+    projectId: null,
+    managed_by_id: null,
+    projName : '',
+    customerId: null,
+    addressline1: '',
+    addressline2:'',
+    city: '',
+    state: '',
+    postcode:'',
+    projectValue:'',
+    contract:'',
+    estimatedDate: '',
+  });
+
   useEffect( () => {
+    console.log("in the first useeffect");
       fetch('/api/builder/customer/1')
       .then((res) => res.json())
       .then((data) => {
         console.log("response <<<<<<<<<<>>>"+JSON.stringify(data.customers))
         setCustomerData(data.customers);
+       
       })
   }, [])
+
+  useEffect( () => {
+      console.log("project Id in the useEffect>>>>"+projectId);
+      fetch('/api/project/'+projectId)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('setProjectData response>>'+JSON.stringify(data))
+  
+        
+          setProjectData(data.project);
+        //  setProjectName(data.project.project_name);
+        setFormData({
+          builderId: data.project.builderId,
+          statusId: data.project.statusId,
+          projectId: data.project.id,
+          managed_by_id: data.project.managed_by_id,
+          projName:  data.project.project_name,
+          customerId: data.project.customerId,
+          addressline1: data.project.address_line_1,
+          addressline2: data.project.address_line_2,
+          city:  data.project.city,
+          state:  data.project.state,
+          postcode:  data.project.postcode,
+          projectValue: data.project.project_value,
+          contract : data.project.project_contract_details,
+          estimatedDate: data.project.project_end_date,
+          
+        })
+        
+        })
+      }, [])
 
   function onSubmit(data: ProjectFormValues) {
     //alert("inside sumit"+JSON.stringify(data));
     console.log("inside the form data>>>"+JSON.stringify(data));
+    console.log("builderId>>"+formData.builderId);
+    
+    var requestBody: any = {};
+    requestBody.submitData = data;
+    requestBody.builderId =formData.builderId;
+    requestBody.statusId= formData.statusId;
+    requestBody.projectId= formData.projectId;
+    requestBody.managed_by_id= formData.managed_by_id;
+    //requestBody.customerId= formData.customerId;
+    
+
+    //  const requestBody = [{
+    //   data: data,
+    //   builderId: formData.builderId
+    // }]
+  
+    console.log("final form data>>>"+JSON.stringify(requestBody));
    setIsLoading(true);
-   console.log("inside the form data>>>"+JSON.stringify(data));
+   setIsLoading(false);
    
    fetch('/api/project', {
      method: 'POST',
-     body: JSON.stringify(data)
+     body: JSON.stringify(requestBody)
    })
    .then((res) => res.json())
    .then((data) => {
@@ -114,10 +185,6 @@ export function ProjectForm() {
     
     </div>
     
-    
-    
-    
-    
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
           <div className="col-span-3">
@@ -128,7 +195,11 @@ export function ProjectForm() {
                 <FormItem>
                   <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Name of the Project" {...field} />
+                    {/* <Input placeholder="Name of the Project" {...field} /> */}
+                    <Input defaultValue={formData.projName} {...field}/>
+
+                    
+                    
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -147,14 +218,14 @@ export function ProjectForm() {
                   <FormLabel>Customer Name</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={formData.customerId}
                   >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Customer" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent defaultValue={formData.customerId}>
                     {
                         customerData.map((cst) => {
                           
@@ -189,7 +260,8 @@ export function ProjectForm() {
                   <FormLabel>Address Line 1</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Address Line 1"
+                    defaultValue={formData.addressline1}
+                      // placeholder="Address Line 1"
                       className="resize-none"
                       {...field}
                     />
@@ -208,7 +280,9 @@ export function ProjectForm() {
                   <FormLabel>Address Line 2</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Address Line 2"
+                    //defaultValue={}
+                    defaultValue={formData.addressline2}
+                      // placeholder="Address Line 2"
                       className="resize-none"
                       {...field}
                     />
@@ -227,7 +301,8 @@ export function ProjectForm() {
                   <FormLabel>City</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="City"
+                      // placeholder="City"
+                      defaultValue={formData.city}
                       className="resize-none"
                       {...field}
                     />
@@ -246,7 +321,8 @@ export function ProjectForm() {
                   <FormLabel>State</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="State"
+                      // placeholder="State"
+                      defaultValue={formData.state}
                       className="resize-none"
                       {...field}
                     />
@@ -265,7 +341,9 @@ export function ProjectForm() {
                   <FormLabel>Zip Code</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="0000-9999"
+                      //placeholder="0000-9999"
+                      defaultValue={formData.postcode}
+                      
                       className="resize-none"
                       {...field}
                     />
@@ -284,7 +362,8 @@ export function ProjectForm() {
                   <FormLabel>Contract</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us a Update the Contract information, enter a brief description of the project, including the scope of work and any relevant details."
+                      defaultValue={formData.contract}
+                      //placeholder="Tell us a Update the Contract information, enter a brief description of the project, including the scope of work and any relevant details."
                       className="resize-none"
                       {...field}
                     />
@@ -304,7 +383,8 @@ export function ProjectForm() {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="9,999,999.00"
+                      defaultValue={formData.projectValue}
+                      //placeholder="9,999,999.00"
                       className="border-input"
                       {...field}
                     />
@@ -325,6 +405,7 @@ export function ProjectForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
+                          defaultValue={formData.estimatedDate}
                           variant={"outline"}
                           className={cn(
                             " pl-3 text-left font-normal",
@@ -360,7 +441,7 @@ export function ProjectForm() {
         </div>
         <div>
           <Button type="submit" className="py-4">
-            Create Project
+          {projectId ? "Update Project" : "Create Project"}{" "}
           </Button>
         </div>
       </form>

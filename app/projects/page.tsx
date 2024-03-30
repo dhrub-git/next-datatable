@@ -24,33 +24,8 @@ export default async function Page() {
       <Separator />
       <ProjectForm />
       <Separator />
-      <h1 className="text-4xl font-bold mb-10">All Projects 🔴 🟢 🟡</h1>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <Tabs defaultValue="milestones" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="milestones">Milestones</TabsTrigger>
-            <TabsTrigger value="disputes">Disputes</TabsTrigger>
-            <TabsTrigger value="payment">Payment Progress</TabsTrigger>
-            <TabsTrigger value="files">Files</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-          </TabsList>
-          <TabsContent value="milestones" className="space-y-4">
-            <DataTable columns={columns} data={data} />
-          </TabsContent>
-          <TabsContent value="disputes" className="space-y-4">
-            <DataTable columns={columns} data={data} />
-          </TabsContent>
-          <TabsContent value="payment" className="space-y-4">
-            <DataTable columns={columns} data={data} />
-          </TabsContent>
-          <TabsContent value="files" className="space-y-4">
-            <DataTable columns={columns} data={data} />
-          </TabsContent>
-          <TabsContent value="history" className="space-y-4">
-            <DataTable columns={columns} data={data} />
-          </TabsContent>
-        </Tabs>
-      </div>
+      {/* <h1 className="text-4xl font-bold mb-10">All Projects 🔴 🟢 🟡</h1> */}
+      
     </div>
   );
 }

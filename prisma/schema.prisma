@@ -61,7 +61,7 @@ model customer {
   postcode     String  @db.VarChar(255) @default("null")
   managed_by_id Int
   managed_by managed_by @relation(fields: [managed_by_id], references: [id])
-  customer_project customer_project[]
+  project project[]
   @@index([builderId])
  
 }
@@ -95,12 +95,13 @@ model project {
   //project_end_date DateTime @db.Date
   project_end_date DateTime @db.Date() @default(dbgenerated())
   project_contract_details String  @db.VarChar(255) @default("null")
-  customer_project customer_project[]
+  customerId Int @default(3)
+  customer customer  @relation(fields: [customerId], references: [id])
   project_milestone project_milestone[]
   project_payment_progres project_payment_progres[]
   project_disputes project_disputes[]
   project_files project_file[]
- 
+ @@index([builderId, customerId])
 }
 model project_status {
 
@@ -111,19 +112,7 @@ model project_status {
 }
 
 
-model customer_project {
 
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String  
-  updatedBy String
-  customerId Int
-  customer customer  @relation(fields: [customerId], references: [id])
-  projectId Int
-  project project  @relation(fields: [projectId], references: [id])
- @@index([customerId, projectId])
-}
 
 model project_milestone {
   id        Int      @id @default(autoincrement())
@@ -135,7 +124,8 @@ model project_milestone {
   projectId Int
   project project @relation(fields: [projectId], references: [id])
 
-  contract_milestone  String  @db.VarChar(255)
+  milestone_categoryId  Int  @default(1)
+  milestone_category milestone_category @relation(fields: [milestone_categoryId], references: [id])
   payment_progress  String  @db.VarChar(255)
   actual_date DateTime @default(now())
   milestone_amount String  @db.VarChar(255)
@@ -145,6 +135,14 @@ model project_milestone {
   status project_milestone_status @relation(fields: [statusId], references: [id])
   variance variance[]
   payment_milestone payment_milestone[]
+}
+
+model milestone_category {
+
+  id Int @id @default(autoincrement())
+  name String  @db.VarChar(255)
+  project_milestone project_milestone[]
+  
 }
 
 model variance {

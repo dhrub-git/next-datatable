@@ -51,23 +51,30 @@ const customerFormSchema = z.object({
   city: z.string().max(160).min(4),
   state: z.string().max(160).min(3),
   zip: z.string().max(160).min(4),
+  customerId: z.number(),
+  builderId: z.number(),
+  statusId: z.number(),
+
 
 });
 
 type CustomerFormValues = z.infer<typeof customerFormSchema>;
+interface CustomerFormProps {
+  initialValues?: Partial<CustomerFormValues>;
+}
 
-export function CustomerForm() {
+export function CustomerForm({ initialValues }: CustomerFormProps) {
+  console.log("itial values >>>"+JSON.stringify(initialValues));
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerFormSchema),
     mode: "onChange",
+    defaultValues: initialValues,
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+ const [error, setError] = useState(false);
 
   function onSubmit(data: CustomerFormValues) {
-    
-    setIsLoading(true);
+
     console.log("inside the form data>>>"+JSON.stringify(data));
     
     fetch('/api/customer', {
@@ -77,10 +84,11 @@ export function CustomerForm() {
     .then((res) => res.json())
     .then((data) => {
       alert(data.message);
-      setIsLoading(false);
+   
     }).catch ((error) => {
-      setError(error);
-      setIsLoading(false);
+      alert(error);
+      //setError(error);
+
     })
     toast({
       title: "You submitted the following values:",
@@ -96,10 +104,7 @@ export function CustomerForm() {
     
     <Form {...form}>
 
-<div>
-      {isLoading ? <p>Loading...</p> : null}
-    
-    </div>
+
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="grid grid-flow-row-dense grid-cols-6 gap-4 pt-2">
@@ -120,6 +125,9 @@ export function CustomerForm() {
                 </FormItem>
               )}
             />
+
+           
+          
           </div>
           <div className="col-span-3">
             <FormField
@@ -237,8 +245,8 @@ export function CustomerForm() {
           </div>
         </div>
         <div>
-          <Button type="submit" className="py-4">
-            Create Customer
+        <Button type="submit" className="py-4">
+            {initialValues ? "Update Customer" : "Create Customer"}{" "}
           </Button>
         </div>
       </form>

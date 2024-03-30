@@ -53,7 +53,7 @@ export const GET = async(req: Request, res: Response) => {
         payChange: payChange
       }
 
-      console.log("respone at the end >>>"+summary)
+      console.log("respone at the end >>>"+JSON.stringify(summary))
     return NextResponse.json( {message: "OK",customers,summary}, {status: 200,})
 };
 

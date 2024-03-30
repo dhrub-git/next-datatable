@@ -3,17 +3,22 @@ import prisma from "@/lib/prisma";
 
 /* First Method to create the customer */
 
-export async function createCustomer (customer: any) {
+export async function createUpdateCustomer (customer: any) {
 
-    const newCustomer =  await prisma.customer.create({
-        data : {
+    const newCustomer =  await prisma.customer.upsert({
+
+        where: {
+           id: customer.customerId ? customer.customerId:0
+        },
+
+        update : {
           //  id: 3,
             builderId: customer.builderId,
             statusId:customer.statusId,
             managed_by_id: customer.managed_by_id,
-            createdAt: new Date(),
+           // createdAt: new Date(),
             updatedAt: new Date (),
-            createdBy: customer.createdBy,
+           // createdBy: customer.createdBy,
             updatedBy: customer.updatedBy,
             customer_name: customer.customername,
             email: customer.email,
@@ -24,7 +29,26 @@ export async function createCustomer (customer: any) {
             postcode:customer.zip
           
 
-        }
+        },
+        create : {
+            //  id: 3,
+              builderId: customer.builderId,
+              statusId:customer.statusId,
+              managed_by_id: customer.managed_by_id,
+              createdAt: new Date(),
+              updatedAt: new Date (),
+              createdBy: customer.createdBy,
+              updatedBy: customer.updatedBy,
+              customer_name: customer.customername,
+              email: customer.email,
+              address_line_1: customer.addressline1,
+              address_line_2: customer.addressline2,
+              city:customer.city,
+              state:customer.state,
+              postcode:customer.zip
+            
+  
+          }
     });
     return newCustomer;
 
@@ -47,6 +71,23 @@ export async function  getCustomers(builderId: Number) {
     return customers;
 }
 
+/* Method to return the customer data for the particular customer*/
+export async function  getCustomerData(customerId: Number) {
+    console.log("Fetching All Customers for the customer Id" + customerId)
+    const customer = await prisma.customer.findUnique( {
+        where : { id: Number(customerId)},
+
+        // select: {
+        //     id:true,
+        //     customer_name: true,
+
+        // }
+    })
+
+    return customer;
+}
+
+
 /*  Method to return the dashboard summary */
 export async function  getBuilderCustomers(id: Number) {
     console.log("Fetching All Customers for the builder Id" + id)
@@ -62,7 +103,7 @@ export async function  getBuilderCustomers(id: Number) {
             city:true,
             state:true,
             postcode:true,
-          
+            createdAt: true,
              updatedAt: true,
              customer_status: {
                 select: {
@@ -70,19 +111,11 @@ export async function  getBuilderCustomers(id: Number) {
                     name: true
                 }
              },   
-            customer_project : {
-            
+             project: {
                 select: {
-                
-                    project: {
-                    
-                        select: {
-                        
-                            id: true,
-                            project_value: true,
-                            project_name: true
-                        }
-                    }
+                    id: true,
+                    project_name: true,
+                    project_value: true
                 }
             },
             managed_by: {

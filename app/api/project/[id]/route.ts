@@ -11,10 +11,10 @@ export const GET = async(req: Request, res: Response) => {
     const getRequestType = req.url.split("api/project/")[1];
     
             try {
-                console.log("get builderid>>>"+getRequestType);
-                const proj = await getProjectData(Number(getRequestType));
+                console.log("get project>>>"+getRequestType);
+                const project = await getProjectData(Number(getRequestType));
             
-                return NextResponse.json({message: "OK", proj}, {status: 200,})
+                return NextResponse.json({message: "OK", project}, {status: 200,})
     
                 }
                 catch (err) {

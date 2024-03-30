@@ -1,5 +1,6 @@
 
-import { createCustomer } from "@/lib/data/customer";
+
+import { createUpdateCustomer } from "@/lib/data/customer";
 import { NextResponse } from "next/server";
 
 
@@ -15,11 +16,11 @@ export async function POST(request: Request) {
         
         customer.createdBy="admin123";
         customer.updatedBy="admin123";
-        customer.builderId=1;
-        customer.statusId=1;
-        customer.managed_by_id=1;
+      //  customer.builderId=1;
+       // customer.statusId=1;
+        customer.managed_by_id=2;
         
-        const newCustomer  = await createCustomer(customer);
+        const newCustomer  = await createUpdateCustomer(customer);
       
         return NextResponse.json({"status":200,"message":"Customer Created Succesfully"});
       
